@@ -1,6 +1,5 @@
-import { Flex } from "@chakra-ui/react";
-import {Sidebar} from "./../components/Sidebar"; 
+import { Container } from "../components/Container";
 
 export default function Home(){
-    return <Flex><Sidebar /></Flex>
+    return (<Container>Teste</Container>)
 }
