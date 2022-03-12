@@ -27,7 +27,7 @@ const {isOpen ,onClose} = useSidebarDrawer()
     )
   }
   return (
-    <Box bg='gray.200' as="aside" w="64" mr="8">
+    <Box bg='gray.600' borderRadius="20" as="aside" w="64" mr="8" p="2rem">
       <SidebarNav/>
     </Box>
   );

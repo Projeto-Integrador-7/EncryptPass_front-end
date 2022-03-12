@@ -5,8 +5,8 @@ export const theme = extendTheme({
     gray: {
       "900": "#181B23",
       "800": "#1F2029",
-      "700": "#353646",
-      "600": "#4B4D63",
+      "700": "#313131",
+      "600": "#494848",
       "500": "#616480",
       "400": "#797D9A",
       "300": "#9699B0",
@@ -22,7 +22,7 @@ export const theme = extendTheme({
   styles: {
     globals: {
       body: {
-        bg: "gray.900",
+        bg: "gray.700",
         color: "gray.50",
       },
     },
