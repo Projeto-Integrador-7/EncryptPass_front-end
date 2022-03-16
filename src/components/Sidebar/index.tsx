@@ -14,7 +14,7 @@ const {isOpen ,onClose} = useSidebarDrawer()
     return(
     <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
       <DrawerOverlay>
-        <DrawerContent bg="gray.800" p="4">
+        <DrawerContent bg="gray.600" p="4">
           <DrawerCloseButton mt="6" />
           <DrawerHeader>Navegação</DrawerHeader>
 
@@ -27,7 +27,7 @@ const {isOpen ,onClose} = useSidebarDrawer()
     )
   }
   return (
-    <Box bg='gray.600' borderRadius="20" as="aside" w="64" mr="8" p="2rem">
+    <Box as="aside" bg='gray.600' borderRadius="20"  w="64" mr="8" p="1.5rem">
       <SidebarNav/>
     </Box>
   );

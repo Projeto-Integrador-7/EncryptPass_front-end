@@ -11,9 +11,9 @@ export function SidebarNav() {
       <BoxLogo />
       <BoxPerfil size="sm" name="Felipe Gomes" />
       <NavSection>
-        <NavLink icon={RiShieldLine} href="/dashboard">Meu Cofre</NavLink>
-        <NavLink icon={RiKey2Fill} href="/users">Gerador de Senha</NavLink>
-        <NavLink icon={RiSettings5Line} href="/forms">Configurações</NavLink>
+        <NavLink icon={RiShieldLine} href="/MeuCofre">Meu Cofre</NavLink>
+        <NavLink icon={RiKey2Fill} href="/GeradorSenhas">Gerador de Senha</NavLink>
+        <NavLink icon={RiSettings5Line} href="/Configuracoes">Configurações</NavLink>
       </NavSection>
     </Stack>
   );

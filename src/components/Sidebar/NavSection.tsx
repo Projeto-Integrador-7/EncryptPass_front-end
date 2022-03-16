@@ -8,11 +8,11 @@ interface NavSectionProps{
 
 export function NavSection({title, children}: NavSectionProps){
     return(
-        <Box>
+        <Box w="100%">
           <Text fontWeight="bold" color="gray.400" fontSize="small">
             {title}
           </Text>
-          <Stack spacing="4" align="stretch">
+          <Stack spacing="1" align="stretch">
             {children}
           </Stack>
         </Box>

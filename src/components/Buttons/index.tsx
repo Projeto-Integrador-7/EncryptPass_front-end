@@ -1,0 +1,1 @@
+export { BotaoAdicionar } from './btnAdicionar'
