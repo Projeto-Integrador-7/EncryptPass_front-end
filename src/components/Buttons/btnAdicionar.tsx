@@ -9,7 +9,6 @@ export interface BotaoAdicionarProps extends ButtonProps{
 export function BotaoAdicionar({iconButton, labelButton, ...rest}) {
   return (
     <Button
-      leftIcon={<Icon as={iconButton} />}
       bg="green.700"
       variant="solid"
       h="8"
@@ -18,6 +17,7 @@ export function BotaoAdicionar({iconButton, labelButton, ...rest}) {
       fontWeight="normal"
       {...rest}
     >
+      {iconButton && (<Icon as={iconButton} />)}
       {labelButton}
     </Button>
   );

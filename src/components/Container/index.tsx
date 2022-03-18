@@ -26,7 +26,7 @@ export function Container({
   showSearchBox = true,
 }: ContainerProps) {
   return (
-    <Flex h="100vh" p="5rem">
+    <Flex h="100vh" py="5rem" px="12rem">
       <Sidebar />
       <Flex
         w="100%"
@@ -36,7 +36,7 @@ export function Container({
         p="1.5rem"
         flexDir="column"
       >
-        <Flex w="100%" align="center" justify="space-between">
+        <Flex w="100%" align="center" justify="space-between" mb="2rem">
           <HStack>
             <Link onClick={() => {}} cursor="pointer" display="flex">
               <Icon as={RiArrowLeftLine} fontSize="20" alignSelf="center" />
