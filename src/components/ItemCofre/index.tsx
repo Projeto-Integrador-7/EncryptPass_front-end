@@ -15,7 +15,7 @@ export function ItemCofre({ title, buttonFunction }) {
       justify="space-between"
       h="16"
       px="2rem"
-      mb="1rem"
+      mb="0.5rem"
       borderRadius="full"
     >
       <Title title={title} />
