@@ -1,36 +1,9 @@
-import { Box, FormControl, Input, Button, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-
-import Image from "next/image";
-
-import { useState } from "react";
+import { FormControl, Input, Button } from "@chakra-ui/react";
 import { AuthContainer } from "../components/AuthContainer";
 
-export default function Login() {
-  const router = useRouter();
-  const toast = useToast();
+import { useState } from "react";
 
-  const fakeUser = {
-    email: "teste@teste.com",
-    password: "teste",
-  };
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  function handleAuth() {
-    if (email === fakeUser.email && password === fakeUser.password) {
-      return router.push("/cofre");
-    }
-
-    return toast({
-      title: "Erro ao acessar.",
-      description: "Revise o usuário e senha.",
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  }
+export default function Register() {
   return (
     <AuthContainer>
       <FormControl
@@ -38,7 +11,7 @@ export default function Login() {
         display="flex"
         flexDirection="column"
         alignItems="center"
-        marginTop="3rem"
+        marginTop="1rem"
       >
         <Input
           id="email"
@@ -51,8 +24,6 @@ export default function Login() {
           marginBottom="0.625rem"
           fontSize="14"
           color="gray.50"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
         />
 
         <Input
@@ -66,8 +37,18 @@ export default function Login() {
           marginBottom="0.625rem"
           fontSize="14"
           color="gray.50"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Input
+          id="password"
+          type={"password"}
+          border="none"
+          placeholder="Confirmar Senha"
+          _placeholder={{ opacity: 1, color: "gray.50" }}
+          background="gray.700"
+          borderRadius="3.125rem"
+          marginBottom="0.625rem"
+          fontSize="14"
+          color="gray.50"
         />
         <Button
           width="6.375rem"
@@ -78,9 +59,9 @@ export default function Login() {
           marginTop="1rem"
           borderRadius="3.125rem"
           type="submit"
-          onClick={handleAuth}
+          onClick={()=>{}}
         >
-          Entrar
+          Cadastrar
         </Button>
       </FormControl>
     </AuthContainer>
