@@ -1,35 +1,60 @@
 import { Box, FormControl, Input, Button, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 import Image from "next/image";
 
 import { useState } from "react";
 import { AuthContainer } from "../components/AuthContainer";
+import { authService } from "../services";
 
 export default function Login() {
   const router = useRouter();
   const toast = useToast();
 
-  const fakeUser = {
-    email: "teste@teste.com",
-    password: "teste",
-  };
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   function handleAuth() {
-    if (email === fakeUser.email && password === fakeUser.password) {
-      return router.push("/cofre");
+    if (!email && !password) {
+      const id = "toast-warning-login";
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: "Preencha todos os campos",
+              status: "warning",
+              isClosable: true,
+            });
+          }
+    } else {
+      authService
+        .signIn({
+          email,
+          password,
+        })
+        .then((res) => {
+          const id = "toast-success-login";
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: "Seja bem vindo!",
+              status: "success",
+              isClosable: true,
+            });
+          }
+          router.push("/Home");
+        })
+        .catch((err) => {
+          const id = "toast-error-login";
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: err.response.data.error,
+              status: "error",
+              isClosable: true,
+            });
+          }
+        });
     }
-
-    return toast({
-      title: "Erro ao acessar.",
-      description: "Revise o usuário e senha.",
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
   }
   return (
     <AuthContainer>

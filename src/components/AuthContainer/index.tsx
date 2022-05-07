@@ -15,16 +15,17 @@ export function AuthContainer({children}:AuthContainerProps) {
     <Layout>
       <Box 
       width="25rem" 
-      height="25rem" 
+      height="auto" 
       background="gray.600" 
       borderRadius="1.875rem"
       display={"flex"}
       justifyContent={"flex-start"}
       alignItems={"center"}
       flexDirection={"column"}
+      py="2rem"
     >
 
-      <Box marginTop="2rem">
+      <Box>
         <Image 
           src={Logo}
           alt='Logo'
