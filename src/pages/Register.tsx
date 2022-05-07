@@ -2,7 +2,7 @@ import { FormControl, Input, Button, useToast } from "@chakra-ui/react";
 import { AuthContainer } from "../components/AuthContainer";
 
 import { useState, useEffect } from "react";
-import { api } from "../services/api";
+import { userService } from "../services";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -18,8 +18,7 @@ export default function Register() {
   const userRegister = async () => {
     if (password == passwordConfirmation) {
       if (name && email && password && password && passwordConfirmation) {
-        await api
-          .post("/user/create", {
+        await userService.create({
             name,
             email,
             password,
