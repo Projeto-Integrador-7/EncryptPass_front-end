@@ -8,7 +8,7 @@ import { SearchBox } from "../SearchBox";
 
 export type ContainerProps = {
   children?: ReactNode;
-  title?: string;
+  title?: string | string[];
   labelButton?: string;
   iconButton?: ElementType;
   showButton?: boolean;
@@ -38,7 +38,7 @@ export function Container({
       >
         <Flex w="100%" align="center" justify="space-between" mb="2rem">
           <HStack>
-            <Link onClick={() => {}} cursor="pointer" display="flex">
+            <Link onClick={() => window.history.back()} cursor="pointer" display="flex">
               <Icon as={RiArrowLeftLine} fontSize="20" alignSelf="center" />
             </Link>
             <Title title={title} />
