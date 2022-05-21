@@ -1,7 +1,7 @@
 import { Text } from "@chakra-ui/react";
 
 export type TitleProps = {
-  title?: string;
+  title?: string | string[];
 };
 
 export function Title({ title }: TitleProps) {

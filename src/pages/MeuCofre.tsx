@@ -13,6 +13,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { RiAddFill } from "react-icons/ri";
 import { Container } from "../components/Container";
@@ -20,14 +21,15 @@ import { ItemCofre } from "../components/ItemCofre";
 import { folderService } from "../services";
 
 export default function MeuCofre() {
+  const route = useRouter()
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const testeItem = [
-    { nome: "Streamings" },
-    { nome: "Redes Sociais" },
-    { nome: "Faculdade" },
+    { id: 1, nome: "Streamings" },
+    { id: 2, nome: "Redes Sociais" },
+    { id: 3, nome: "Faculdade" },
   ];
   const handleFolder = () => {
     if (!title && !description) {
@@ -72,18 +74,20 @@ export default function MeuCofre() {
           <ItemCofre
             key={`index-${index}`}
             title={item.nome}
-            buttonFunction={() => {}}
+            buttonFunction={() => {
+              route.push(`/${item.nome.toLowerCase().replace(" ", "-")}/${item.id}`)
+            }}
           />
         ))}
       </Container>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Nova Pasta</ModalHeader>
+          <ModalHeader color={"gray.700"}>Nova Pasta</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel>Nome da pasta</FormLabel>
+              <FormLabel color={"gray.700"}>Nome da pasta</FormLabel>
               <Input
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Nome da pasta"
@@ -91,7 +95,7 @@ export default function MeuCofre() {
             </FormControl>
 
             <FormControl mt={4}>
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel color={"gray.700"}>Descrição</FormLabel>
               <Input
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Descrição"
@@ -101,9 +105,9 @@ export default function MeuCofre() {
 
           <ModalFooter>
             <Button bg="green.700" mr={3} onClick={handleFolder}>
-              Save
+              Salvar
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose} color={"white"}>Cancelar</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
