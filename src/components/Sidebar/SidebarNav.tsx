@@ -5,11 +5,15 @@ import { NavSection } from "./NavSection";
 import {BoxLogo} from "./BoxLogo"
 import { BoxPerfil } from "./BoxPerfil";
 
-export function SidebarNav() {
+type SidebarNavProps = {
+  userName: string;
+}
+
+export function SidebarNav({userName}: SidebarNavProps) {
   return (
     <Stack spacing="5" align="flex-start">
       <BoxLogo />
-      <BoxPerfil size="sm" name="Felipe Gomes" />
+      <BoxPerfil size="sm" name={userName} />
       <NavSection>
         <NavLink icon={RiShieldLine} href="/MeuCofre">Meu Cofre</NavLink>
         <NavLink icon={RiKey2Fill} href="/GeradorSenhas">Gerador de Senha</NavLink>

@@ -1,59 +1,56 @@
 import { Box, FormControl, Input, Button, useToast } from "@chakra-ui/react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
-import Image from "next/image";
-
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContainer } from "../components/AuthContainer";
-import { authService } from "../services";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function Login() {
+  const { signIn } = useContext(AuthContext);
   const router = useRouter();
   const toast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleAuth() {
+  async function handleAuth() {
     if (!email && !password) {
       const id = "toast-warning-login";
-          if (!toast.isActive(id)) {
-            toast({
-              id,
-              title: "Preencha todos os campos",
-              status: "warning",
-              isClosable: true,
-            });
-          }
+      if (!toast.isActive(id)) {
+        toast({
+          id,
+          title: "Preencha todos os campos",
+          status: "warning",
+          isClosable: true,
+        });
+      }
     } else {
-      authService
-        .signIn({
+      await signIn({
           email,
           password,
         })
-        .then((res) => {
-          const id = "toast-success-login";
-          if (!toast.isActive(id)) {
-            toast({
-              id,
-              title: "Seja bem vindo!",
-              status: "success",
-              isClosable: true,
-            });
-          }
-          router.push("/Home");
-        })
-        .catch((err) => {
-          const id = "toast-error-login";
-          if (!toast.isActive(id)) {
-            toast({
-              id,
-              title: err.response.data.error,
-              status: "error",
-              isClosable: true,
-            });
-          }
-        });
+        // .then((res) => {
+        //   const id = "toast-success-login";
+        //   if (!toast.isActive(id)) {
+        //     toast({
+        //       id,
+        //       title: "Seja bem vindo!",
+        //       status: "success",
+        //       isClosable: true,
+        //     });
+        //   }
+        // })
+        // .catch((err) => {
+        //   const id = "toast-error-login";
+        //   if (!toast.isActive(id)) {
+        //     toast({
+        //       id,
+        //       title: err.response.data.error,
+        //       status: "error",
+        //       isClosable: true,
+        //     });
+        //   }
+        // });
     }
   }
   return (
