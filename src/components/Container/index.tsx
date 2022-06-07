@@ -1,10 +1,11 @@
 import { Flex, HStack, Icon, Link } from "@chakra-ui/react";
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactNode, useContext } from "react";
 import { RiArrowLeftLine } from "react-icons/ri";
 import { Sidebar } from "../Sidebar";
 import { Title } from "../Text";
 import { BotaoAdicionar } from "../Buttons";
 import { SearchBox } from "../SearchBox";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export type ContainerProps = {
   children?: ReactNode;
@@ -25,9 +26,10 @@ export function Container({
   showButton = true,
   showSearchBox = true,
 }: ContainerProps) {
+  const { user } = useContext(AuthContext)
   return (
     <Flex h="100vh" py="5rem" px="12rem">
-      <Sidebar />
+      <Sidebar userName={user?.name.toString()} />
       <Flex
         w="100%"
         h="100%"
