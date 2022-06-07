@@ -2,33 +2,37 @@ import { Box, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader
 import { useSidebarDrawer } from "../../contexts/SidebarDrawerContext";
 import { SidebarNav } from "./SidebarNav";
 
-export function Sidebar() {
-const {isOpen ,onClose} = useSidebarDrawer()
+type SidebarProps = {
+  userName: string;
+}
 
-  const isDrawerSidebar = useBreakpointValue({
-    base: true,
-    lg: false,
-  })
+export function Sidebar({userName}: SidebarProps) {
+// const {isOpen ,onClose} = useSidebarDrawer()
 
-  if(isDrawerSidebar){
-    return(
-    <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-      <DrawerOverlay>
-        <DrawerContent bg="gray.600" p="4">
-          <DrawerCloseButton mt="6" />
-          <DrawerHeader>Navegação</DrawerHeader>
+//   const isDrawerSidebar = useBreakpointValue({
+//     base: true,
+//     lg: false,
+//   })
 
-          <DrawerBody>
-            <SidebarNav />
-          </DrawerBody>
-        </DrawerContent>
-      </DrawerOverlay>
-    </Drawer>
-    )
-  }
+  // if(isDrawerSidebar){
+  //   return(
+  //   <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+  //     <DrawerOverlay>
+  //       <DrawerContent bg="gray.600" p="4">
+  //         <DrawerCloseButton mt="6" />
+  //         <DrawerHeader>Navegação</DrawerHeader>
+
+  //         <DrawerBody>
+  //           <SidebarNav />
+  //         </DrawerBody>
+  //       </DrawerContent>
+  //     </DrawerOverlay>
+  //   </Drawer>
+  //   )
+  // }
   return (
     <Box as="aside" bg='gray.600' borderRadius="20"  w="64" mr="8" p="1.5rem">
-      <SidebarNav/>
+      <SidebarNav userName={userName}/>
     </Box>
   );
 }
