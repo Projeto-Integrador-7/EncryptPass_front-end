@@ -26,10 +26,10 @@ export function Container({
   showButton = true,
   showSearchBox = true,
 }: ContainerProps) {
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   return (
     <Flex h="100vh" py="5rem" px="12rem">
-      <Sidebar userName={user?.name.toString()} />
+      <Sidebar userName={String(user?.name)} />
       <Flex
         w="100%"
         h="100%"
@@ -40,7 +40,11 @@ export function Container({
       >
         <Flex w="100%" align="center" justify="space-between" mb="2rem">
           <HStack>
-            <Link onClick={() => window.history.back()} cursor="pointer" display="flex">
+            <Link
+              onClick={() => window.history.back()}
+              cursor="pointer"
+              display="flex"
+            >
               <Icon as={RiArrowLeftLine} fontSize="20" alignSelf="center" />
             </Link>
             <Title title={title} />
@@ -50,6 +54,7 @@ export function Container({
               labelButton={labelButton}
               iconButton={iconButton}
               onClick={buttonFunction}
+              bg="green.700"
             />
           )}
         </Flex>
@@ -58,7 +63,9 @@ export function Container({
             <SearchBox />
           </Flex>
         )}
-        {children}
+        <Flex w="100%" h="100%" flexDir="column" overflowY="scroll">
+          {children}
+        </Flex>
       </Flex>
     </Flex>
   );
