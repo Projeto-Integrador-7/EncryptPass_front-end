@@ -13,41 +13,74 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RiAddFill } from "react-icons/ri";
 import { Container } from "../components/Container";
 import { ItemCofre } from "../components/ItemCofre";
+import {parseCookies} from 'nookies'
+import { AuthContext } from "../contexts/AuthContext";
 import { folderService } from "../services";
+import { getAPIClient } from "../services/axios";
 
 export default function MeuCofre() {
-  const route = useRouter()
+  const route = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const testeItem = [
-    { id: 1, nome: "Streamings" },
-    { id: 2, nome: "Redes Sociais" },
-    { id: 3, nome: "Faculdade" },
-  ];
+  const [folderList, setFolderList] = useState([]);
+  const { user, loading } = useContext(AuthContext);
+
+  useEffect(() => {
+    async function loadingData() {
+      await folderService
+      .findAll(user._id)
+      .then((res) => {
+        setFolderList(res.data);
+      })
+      .catch((err) => {
+        const id = "toast-fail-load";
+        if (!toast.isActive(id)) {
+          toast({
+            id,
+            title: err.response.data.error,
+            status: "error",
+            isClosable: true,
+          });
+        }
+      });
+    }
+    if(!loading)
+    loadingData()
+  }, [loading]);
+
   const handleFolder = () => {
     if (!title && !description) {
     } else {
-      folderService.create({
-          title,
-          description,
-        })
+      folderService
+        .create(
+          {
+            title,
+            description,
+          },
+          user._id
+        )
         .then((res) => {
+          onClose();
+          console.log(res.data.folder);
+          var list = folderList;
+          // setFolderList(list.push(res.data.folder));
           const id = "toast-success-folder";
-            if (!toast.isActive(id)) {
-              toast({
-                id,
-                title: "Nova pasta adicionada!",
-                status: "success",
-                isClosable: true,
-              });
-            }
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: "Nova pasta adicionada!",
+              status: "success",
+              isClosable: true,
+            });
+          }
         })
         .catch((err) => {
           const id = "toast-fail-folder";
@@ -62,6 +95,33 @@ export default function MeuCofre() {
         });
     }
   };
+
+  const deleteFolder = (folderId) => {
+    folderService.deleteFolder(user._id, folderId)
+    .then((res) => {
+      const id = "toast-success-delete";
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: "Pasta removida com sucesso!",
+              status: "success",
+              isClosable: true,
+            });
+          }
+    })
+    .catch((err) => {
+      const id = "toast-error-delete";
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: "Erro ao deletar pasta!",
+              status: "error",
+              isClosable: true,
+            });
+          }
+    })
+  }
+
   return (
     <>
       <Container
@@ -70,13 +130,17 @@ export default function MeuCofre() {
         iconButton={RiAddFill}
         buttonFunction={onOpen}
       >
-        {testeItem.map((item, index) => (
+        {folderList.map((item, index) => (
           <ItemCofre
             key={`index-${index}`}
-            title={item.nome}
+            title={item.title}
+            description={item.description}
             buttonFunction={() => {
-              route.push(`/${item.nome.toLowerCase().replace(" ", "-")}/${item.id}`)
+              route.push(
+                `/${item.nome.toLowerCase().replace(" ", "-")}/${item.id}`
+              );
             }}
+            removeFunction={() => {deleteFolder}}
           />
         ))}
       </Container>
@@ -107,10 +171,28 @@ export default function MeuCofre() {
             <Button bg="green.700" mr={3} onClick={handleFolder}>
               Salvar
             </Button>
-            <Button onClick={onClose} color={"white"}>Cancelar</Button>
+            <Button onClick={onClose} color={"white"}>
+              Cancelar
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const {['encryptpass.token']: token} = parseCookies(ctx)
+
+  if(!token){
+    return {
+      redirect: {
+        destination: '/Login',
+        permanent: false,
+      }
+    }
+  }
+  return {
+    props: {}
+  }
 }

@@ -4,12 +4,13 @@ import { ElementType } from "react";
 export interface BotaoAdicionarProps extends ButtonProps{
     labelButton?: string;
     iconButton? : ElementType;
+    bg?: string;
 }
 
-export function BotaoAdicionar({iconButton, labelButton, ...rest}) {
+export function BotaoAdicionar({iconButton, labelButton, bg, ...rest}) {
   return (
     <Button
-      bg="green.700"
+      bg={bg}
       variant="solid"
       h="8"
       borderRadius="full"
