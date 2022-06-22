@@ -3,6 +3,7 @@ import { AuthContainer } from "../components/AuthContainer";
 
 import { useState, useEffect } from "react";
 import { userService } from "../services";
+import {useHistory} from "react-router-dom"
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -12,7 +13,7 @@ export default function Register() {
   const [passwordReminder, setPasswordReminder] = useState(false);
   const [passwordReminderTip, setPasswordReminderTip] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
+  const history = useHistory();
   const toast = useToast();
 
   const userRegister = async () => {
@@ -30,6 +31,7 @@ export default function Register() {
             phoneNumber,
           })
           .then((res) => {
+            history.push('/Login')
             const id = "toast-success-register";
             if (!toast.isActive(id)) {
               toast({

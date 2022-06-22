@@ -63,7 +63,7 @@ export function Container({
             <SearchBox />
           </Flex>
         )}
-        <Flex w="100%" h="100%" flexDir="column" overflowY="scroll">
+        <Flex w="100%" h="100%" flexDir="column" >
           {children}
         </Flex>
       </Flex>
