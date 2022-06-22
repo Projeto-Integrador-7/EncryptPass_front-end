@@ -84,7 +84,7 @@ export function ItemCofre({
               <Button ref={cancelRef} onClick={onClose}>
                 Cancelar
               </Button>
-              <Button colorScheme="red" onClick={removeFunction} ml={3}>
+              <Button colorScheme="red" onClick={() => {removeFunction}} ml={3}>
                 Remover
               </Button>
             </AlertDialogFooter>

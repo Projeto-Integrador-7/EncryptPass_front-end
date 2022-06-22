@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -19,10 +20,11 @@ import { useContext, useEffect, useState } from "react";
 import { RiAddFill } from "react-icons/ri";
 import { Container } from "../components/Container";
 import { ItemCofre } from "../components/ItemCofre";
-import {parseCookies} from 'nookies'
+import { parseCookies } from "nookies";
 import { AuthContext } from "../contexts/AuthContext";
 import { folderService } from "../services";
 import { getAPIClient } from "../services/axios";
+import { Loading } from "../components/Loading";
 
 export default function MeuCofre() {
   const route = useRouter();
@@ -33,9 +35,8 @@ export default function MeuCofre() {
   const [folderList, setFolderList] = useState([]);
   const { user, loading } = useContext(AuthContext);
 
-  useEffect(() => {
-    async function loadingData() {
-      await folderService
+  async function loadingData() {
+    await folderService
       .findAll(user._id)
       .then((res) => {
         setFolderList(res.data);
@@ -51,9 +52,10 @@ export default function MeuCofre() {
           });
         }
       });
-    }
-    if(!loading)
-    loadingData()
+  }
+
+  useEffect(() => {
+    if (!loading) loadingData();
   }, [loading]);
 
   const handleFolder = () => {
@@ -70,8 +72,7 @@ export default function MeuCofre() {
         .then((res) => {
           onClose();
           console.log(res.data.folder);
-          var list = folderList;
-          // setFolderList(list.push(res.data.folder));
+          loadingData();
           const id = "toast-success-folder";
           if (!toast.isActive(id)) {
             toast({
@@ -96,31 +97,35 @@ export default function MeuCofre() {
     }
   };
 
-  const deleteFolder = (folderId) => {
-    folderService.deleteFolder(user._id, folderId)
-    .then((res) => {
-      const id = "toast-success-delete";
-          if (!toast.isActive(id)) {
-            toast({
-              id,
-              title: "Pasta removida com sucesso!",
-              status: "success",
-              isClosable: true,
-            });
-          }
-    })
-    .catch((err) => {
-      const id = "toast-error-delete";
-          if (!toast.isActive(id)) {
-            toast({
-              id,
-              title: "Erro ao deletar pasta!",
-              status: "error",
-              isClosable: true,
-            });
-          }
-    })
-  }
+  const deletarPasta = (folderId: String) => {
+    console.log(user._id)
+    console.log("AAAAAAA")
+    console.log(folderId)
+    folderService
+      .deleteFolder(user._id, folderId)
+      .then((res) => {
+        const id = "toast-success-delete";
+        if (!toast.isActive(id)) {
+          toast({
+            id,
+            title: "Pasta removida com sucesso!",
+            status: "success",
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        const id = "toast-error-delete";
+        if (!toast.isActive(id)) {
+          toast({
+            id,
+            title: "Erro ao deletar pasta!",
+            status: "error",
+            isClosable: true,
+          });
+        }
+      });
+  };
 
   return (
     <>
@@ -130,19 +135,25 @@ export default function MeuCofre() {
         iconButton={RiAddFill}
         buttonFunction={onOpen}
       >
-        {folderList.map((item, index) => (
-          <ItemCofre
-            key={`index-${index}`}
-            title={item.title}
-            description={item.description}
-            buttonFunction={() => {
-              route.push(
-                `/${item.nome.toLowerCase().replace(" ", "-")}/${item.id}`
-              );
-            }}
-            removeFunction={() => {deleteFolder}}
-          />
-        ))}
+        {loading ? (
+          <Loading />
+        ) : (
+          <Flex w="100%" h="100%" flexDir="column">
+            {folderList.map((item, index) => (
+              <ItemCofre
+                key={`index-${index}`}
+                title={item.title}
+                description={item.description}
+                buttonFunction={() => {
+                  route.push(
+                    `/${item.nome.toLowerCase().replace(" ", "-")}/${item.id}`
+                  );
+                }}
+                removeFunction={() => {deletarPasta(item.id)}}
+              />
+            ))}
+          </Flex>
+        )}
       </Container>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -182,17 +193,17 @@ export default function MeuCofre() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {['encryptpass.token']: token} = parseCookies(ctx)
+  const { ["encryptpass.token"]: token } = parseCookies(ctx);
 
-  if(!token){
+  if (!token) {
     return {
       redirect: {
-        destination: '/Login',
+        destination: "/Login",
         permanent: false,
-      }
-    }
+      },
+    };
   }
   return {
-    props: {}
-  }
-}
+    props: {},
+  };
+};
