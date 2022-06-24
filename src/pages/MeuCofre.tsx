@@ -25,6 +25,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { folderService } from "../services";
 import { getAPIClient } from "../services/axios";
 import { Loading } from "../components/Loading";
+import { useHistory } from "react-router-dom"
 
 export default function MeuCofre() {
   const route = useRouter();
@@ -34,6 +35,7 @@ export default function MeuCofre() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [folderList, setFolderList] = useState([]);
   const { user, loading } = useContext(AuthContext);
+  const history = useHistory();
 
   async function loadingData() {
     await folderService
@@ -71,7 +73,6 @@ export default function MeuCofre() {
         )
         .then((res) => {
           onClose();
-          console.log(res.data.folder);
           loadingData();
           const id = "toast-success-folder";
           if (!toast.isActive(id)) {
@@ -84,6 +85,8 @@ export default function MeuCofre() {
           }
         })
         .catch((err) => {
+          onClose();
+          loadingData();
           const id = "toast-fail-folder";
           if (!toast.isActive(id)) {
             toast({
@@ -98,12 +101,11 @@ export default function MeuCofre() {
   };
 
   const deletarPasta = (folderId: String) => {
-    console.log(user._id)
-    console.log("AAAAAAA")
-    console.log(folderId)
     folderService
       .deleteFolder(user._id, folderId)
       .then((res) => {
+        onClose();
+        loadingData();
         const id = "toast-success-delete";
         if (!toast.isActive(id)) {
           toast({
@@ -115,6 +117,8 @@ export default function MeuCofre() {
         }
       })
       .catch((err) => {
+        onClose();
+        loadingData();
         const id = "toast-error-delete";
         if (!toast.isActive(id)) {
           toast({
@@ -134,6 +138,7 @@ export default function MeuCofre() {
         labelButton="Adicionar"
         iconButton={RiAddFill}
         buttonFunction={onOpen}
+        showSearchBox={false}
       >
         {loading ? (
           <Loading />
@@ -146,10 +151,10 @@ export default function MeuCofre() {
                 description={item.description}
                 buttonFunction={() => {
                   route.push(
-                    `/${item.nome.toLowerCase().replace(" ", "-")}/${item.id}`
+                    `/${item.title.toLowerCase().replace(" ", "-")}/${item._id}`
                   );
                 }}
-                removeFunction={() => {deletarPasta(item.id)}}
+                removeFunction={() => {deletarPasta(item._id)}}
               />
             ))}
           </Flex>

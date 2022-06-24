@@ -47,7 +47,7 @@ export default function Register() {
             if (!toast.isActive(id)) {
               toast({
                 id,
-                title: err.response.data.error,
+                title: "Erro ao cadastrar",
                 status: "error",
                 isClosable: true,
               });

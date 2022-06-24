@@ -4,26 +4,60 @@ import { Container } from "../components/Container";
 import { parseCookies } from "nookies";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { Flex, Input } from "@chakra-ui/react";
+import { Flex, Input, useToast } from "@chakra-ui/react";
 import { BotaoAdicionar } from "../components/Buttons";
 import { Loading } from "../components/Loading";
+import { userService } from "../services";
 
 export default function Configuracoes() {
   const { user, loading } = useContext(AuthContext);
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [telefone, setTelefone] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [send, setSand] = useState(false);
+  const toast = useToast();
 
-  useEffect(()=>{
-    const loadData = () => {
-      setName(String(user.name))
-      setEmail(String(user.email))
-      setTelefone(String(user.phoneNumber))
+  const loadData = () => {
+    setName(String(user.name));
+    setEmail(String(user.email));
+    setTelefone(String(user.phoneNumber));
+  };
+
+  async function atualizarUsuario() {
+    setSand(true);
+    await userService
+      .update(user._id, { name, email, telefone })
+      .then((res) => {
+        setSand(false);
+        const id = "toast-succes-update";
+        if (!toast.isActive(id)) {
+          toast({
+            id,
+            title: "Usuario atualizado com sucesso!",
+            status: "success",
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        setSand(false);
+        const id = "toast-failed-update";
+        if (!toast.isActive(id)) {
+          toast({
+            id,
+            title: "Erro ao atualizar!",
+            status: "error",
+            isClosable: true,
+          });
+        }
+      });
+  }
+
+  useEffect(() => {
+    if (!loading) {
+      loadData();
     }
-    if(!loading){
-      loadData()
-    }
-  },[loading])
+  }, [loading]);
 
   return (
     <Container showButton={false} showSearchBox={false} title="Configurações">
@@ -41,6 +75,7 @@ export default function Configuracoes() {
             marginBottom="0.625rem"
             fontSize="14"
             color="gray.50"
+            onChange={(e) => setName(e.target.value)}
             value={name}
           />
           <Input
@@ -53,6 +88,7 @@ export default function Configuracoes() {
             marginBottom="0.625rem"
             fontSize="14"
             color="gray.50"
+            onChange={(e) => setEmail(e.target.value)}
             value={email}
           />
           <Input
@@ -65,14 +101,20 @@ export default function Configuracoes() {
             marginBottom="0.625rem"
             fontSize="14"
             color="gray.50"
+            onChange={(e) => setTelefone(e.target.value)}
             value={telefone}
           />
-          <BotaoAdicionar
-            labelButton="Salvar"
-            iconButton={undefined}
-            bg="green.700"
-            w="7rem"
-          />
+          {send ? (
+            <Loading />
+          ) : (
+            <BotaoAdicionar
+              labelButton="Salvar"
+              iconButton={undefined}
+              bg="green.700"
+              w="7rem"
+              onClick={atualizarUsuario}
+            />
+          )}
         </Flex>
       )}
     </Container>
