@@ -9,6 +9,21 @@ export async function create(data: { title: string; description: string; }, id: 
     })
   }
 
+export async function createCredential(id , data) {
+  return await api({
+    url: `/credentials/${id}/create`,
+    method: 'POST',
+    data: data
+  })
+}
+
+export async function findAllCredential(userId, folderId) {
+  return await api({
+    url: `/credentials/${userId}/${folderId}`,
+    method: 'GET'
+  })
+}
+
 export async function findAll(id: String) {
     return await api({
       url: `/folder/${id}/findAll`,
@@ -19,6 +34,6 @@ export async function findAll(id: String) {
 export async function deleteFolder(id: String, folderId: String) {
     return await api({
       url: `/folder/${id}/delete/${folderId}`,
-      method: 'GET'
+      method: 'DELETE'
     })
   }

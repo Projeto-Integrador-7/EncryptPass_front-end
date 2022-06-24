@@ -8,3 +8,11 @@ export function create(data) {
       data: data
     })
   }
+
+  export function update(id, data) {
+    return api({
+      url: `/user/update/${id}`,
+      method: 'PUT',
+      data: data
+    })
+  }
