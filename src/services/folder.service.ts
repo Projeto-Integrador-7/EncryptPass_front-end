@@ -17,6 +17,21 @@ export async function createCredential(id , data) {
   })
 }
 
+export async function updateCredential(id, credentialsId, data) {
+  return await api({
+    url: `/credentials/${id}/update/${credentialsId}`,
+    method: 'PUT',
+    data: data
+  })
+}
+
+export async function deleteCredential(id, credentialsId) {
+  return await api({
+    url: `/credentials/${id}/delete/${credentialsId}`,
+    method: 'DELETE'
+  })
+}
+
 export async function findAllCredential(userId, folderId) {
   return await api({
     url: `/credentials/${userId}/${folderId}`,

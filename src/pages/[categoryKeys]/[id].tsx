@@ -1,6 +1,12 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
+  ButtonGroup,
   Flex,
   FormControl,
   FormLabel,
@@ -17,7 +23,9 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { parseCookies } from "nookies";
 import { useContext, useEffect, useState } from "react";
 import { RiAddFill } from "react-icons/ri";
 import { Container } from "../../components/Container";
@@ -31,6 +39,8 @@ export default function Keys() {
   const router = useRouter();
   const { categoryKeys, id } = router.query;
   const [password, setPassword] = useState("");
+  const [pass, setPass] = useState("");
+  const [loginKey, setLoginKey] = useState("");
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [login, setLogin] = useState("");
@@ -43,8 +53,8 @@ export default function Keys() {
     await folderService
       .findAllCredential(user._id, query.id)
       .then((res) => {
-        console.log(res.data)
-        setCredentials(res.data);
+        console.log(res.data.credentials);
+        setCredentials(res.data.credentials);
       })
       .catch((err) => {
         const id = "toast-load-fail";
@@ -61,7 +71,7 @@ export default function Keys() {
 
   useEffect(() => {
     if (!loading) loadingData();
-  }, []);
+  }, [loading]);
 
   const handleFolder = () => {
     if (!title || !login || !password) {
@@ -84,6 +94,7 @@ export default function Keys() {
           folderId: query.id,
         })
         .then((res) => {
+          loadingData();
           onClose();
           const id = "toast-success-folder";
           if (!toast.isActive(id)) {
@@ -96,6 +107,7 @@ export default function Keys() {
           }
         })
         .catch((err) => {
+          loadingData();
           onClose();
           const id = "toast-fail-folder";
           if (!toast.isActive(id)) {
@@ -109,6 +121,53 @@ export default function Keys() {
         });
     }
   };
+
+  async function updateCredentials(credentialsId){
+    await folderService.updateCredential(user._id, credentialsId, {
+      login: loginKey,
+      password: pass,
+      folderId: query.id,
+    }).then(()=>{
+      loadingData();
+    }).catch((err) => {
+      loadingData();
+      const id = "toast-fail-cred";
+      if (!toast.isActive(id)) {
+        toast({
+          id,
+          title: "Falha ao editar credenciais",
+          status: "error",
+          isClosable: true,
+        });
+      }
+    })
+  }
+
+  async function deleteCredentials(credentialsId){
+    await folderService.deleteCredential(user._id, credentialsId).then((res)=>{
+      loadingData();
+      const id = "toast-fail-folder";
+      if (!toast.isActive(id)) {
+        toast({
+          id,
+          title: "Credencial deletada!",
+          status: "success",
+          isClosable: true,
+        });
+      }
+    }).catch(err => {
+      loadingData();
+      const id = "toast-fail-folder";
+          if (!toast.isActive(id)) {
+            toast({
+              id,
+              title: "Falha ao remover credenciais",
+              status: "error",
+              isClosable: true,
+            });
+          }
+    })
+  }
 
   const handleRandomKey = () => {
     const chars =
@@ -130,18 +189,58 @@ export default function Keys() {
         labelButton="Adicionar"
         iconButton={RiAddFill}
         buttonFunction={onOpen}
+        showSearchBox={false}
       >
         {loading ? (
           <Loading />
         ) : (
           <Flex w="100%" h="100%" flexDir="column">
-            {credentials.map((item, index) => (
-              <ItemCofre
-                key={`index-${index}`}
-                title={item.nome}
-                buttonFunction={() => {}}
-              />
-            ))}
+            <Accordion allowMultiple>
+              {credentials.map((item, index) => (
+                <AccordionItem key={`index-${index}`}>
+                  <h2>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        {item.title}
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    <Input
+                      border="none"
+                      _placeholder={{ opacity: 1, color: "gray.50" }}
+                      placeholder={item.login}
+                      background="gray.700"
+                      borderRadius="3.125rem"
+                      marginBottom="0.625rem"
+                      fontSize="14"
+                      color="gray.50"
+                      name="loginKey"
+                      onChange={(e) => setLoginKey(e.target.value)}
+                      value={item.login}
+                    />
+                    <Input
+                      border="none"
+                      _placeholder={{ opacity: 1, color: "gray.50" }}
+                      placeholder={item.password}
+                      background="gray.700"
+                      borderRadius="3.125rem"
+                      marginBottom="0.625rem"
+                      fontSize="14"
+                      color="gray.50"
+                      name="pass"
+                      onChange={(e) => setPass(e.target.value)}
+                      value={item.password}
+                    />
+                    <ButtonGroup gap='4' display="flex" justifyContent="center">
+                      <Button colorScheme='green' onClick={() => (updateCredentials(item._id))}>Salvar</Button>
+                      <Button colorScheme='red' onClick={() => (deleteCredentials(item._id))}>Remover</Button>
+                    </ButtonGroup>
+                  </AccordionPanel>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </Flex>
         )}
       </Container>
@@ -222,3 +321,19 @@ export default function Keys() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { ["encryptpass.token"]: token } = parseCookies(ctx);
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/Login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};

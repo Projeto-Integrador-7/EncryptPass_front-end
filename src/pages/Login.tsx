@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import { useContext, useState } from "react";
 import { AuthContainer } from "../components/AuthContainer";
+import { Loading } from "../components/Loading";
 import { AuthContext } from "../contexts/AuthContext";
 
 export default function Login() {
@@ -12,9 +13,12 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleAuth() {
+    setLoading(true);
     if (!email && !password) {
+      setLoading(false);
       const id = "toast-warning-login";
       if (!toast.isActive(id)) {
         toast({
@@ -26,31 +30,9 @@ export default function Login() {
       }
     } else {
       await signIn({
-          email,
-          password,
-        })
-        // .then((res) => {
-        //   const id = "toast-success-login";
-        //   if (!toast.isActive(id)) {
-        //     toast({
-        //       id,
-        //       title: "Seja bem vindo!",
-        //       status: "success",
-        //       isClosable: true,
-        //     });
-        //   }
-        // })
-        // .catch((err) => {
-        //   const id = "toast-error-login";
-        //   if (!toast.isActive(id)) {
-        //     toast({
-        //       id,
-        //       title: err.response.data.error,
-        //       status: "error",
-        //       isClosable: true,
-        //     });
-        //   }
-        // });
+        email,
+        password,
+      });
     }
   }
   return (
@@ -91,19 +73,23 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button
-          width="6.375rem"
-          height="2.063rem"
-          background="green.700"
-          color="gray.50"
-          fontWeight="normal"
-          marginTop="1rem"
-          borderRadius="3.125rem"
-          type="submit"
-          onClick={handleAuth}
-        >
-          Entrar
-        </Button>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Button
+            width="6.375rem"
+            height="2.063rem"
+            background="green.700"
+            color="gray.50"
+            fontWeight="normal"
+            marginTop="1rem"
+            borderRadius="3.125rem"
+            type="submit"
+            onClick={handleAuth}
+          >
+            Entrar
+          </Button>
+        )}
       </FormControl>
     </AuthContainer>
   );
